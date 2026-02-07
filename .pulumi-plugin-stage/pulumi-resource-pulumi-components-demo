@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [ ! -d "${PLUGIN_DIR}/node_modules" ]; then
+  (cd "${PLUGIN_DIR}" && pnpm install --prod --frozen-lockfile)
+fi
+
+# Run the provider server entrypoint (compiled JS).
+# IMPORTANT: do not write anything to stdout from here.
+exec node "${PLUGIN_DIR}/dist/plugin/provider.js"

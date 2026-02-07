@@ -21,8 +21,14 @@ printf "\n${MAGENTA}Post-build steps...${RESET}\n\n"
 
 printf " ->${CYAN} Adding go.mod file to sdk/go/pulumicomponentsdemo...${RESET}\n"
 cp go.mod sdk/go/pulumicomponentsdemo/
-  
+
+printf " ->${CYAN} Replace module path in sdk/go/pulumicomponentsdemo/go.mod...${RESET}\n"
+( cd sdk/go/pulumicomponentsdemo/ && go mod edit -module github.com/neovasili/pulumi-components-demo/sdk/go/pulumicomponentsdemo )
+
 printf " ->${CYAN} Applying mod tidy to sdk/go/pulumicomponentsdemo...${RESET}\n"
 ( cd sdk/go/pulumicomponentsdemo/ && go mod tidy )
+
+printf " ->${CYAN} Copy package.json to provider built directory...${RESET}\n"
+cp package.json dist/plugin/
 
 printf "\n${GREEN}✅ Post-build steps completed successfully!${RESET}\n"

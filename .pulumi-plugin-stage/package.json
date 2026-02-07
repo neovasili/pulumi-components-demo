@@ -1,0 +1,41 @@
+{
+  "name": "pulumi-components-demo",
+  "description": "Pulumi component resources monorepo",
+  "version": "0.1.0",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**",
+    "PulumiPlugin.yaml",
+    "README.md"
+  ],
+  "bin": {
+    "pulumi-resource-pulumi-components-demo": "bin/pulumi-resource-pulumi-components-demo"
+  },
+  "packageManager": "pnpm@10.28.0",
+  "scripts": {
+    "build:debug": "./scripts/build.sh -d",
+    "build": "./scripts/build.sh",
+    "postbuild": "./scripts/post_build.sh",
+    "gen:schema:debug": "./scripts/generate_schema.sh -d",
+    "gen:schema": "./scripts/generate_schema.sh",
+    "gen:sdk:nodejs:debug": "./scripts/generate_sdk.sh -l nodejs -d",
+    "gen:sdk:nodejs": "./scripts/generate_sdk.sh -l nodejs",
+    "gen:sdk:go:debug": "./scripts/generate_sdk.sh -l go -d",
+    "gen:sdk:go": "./scripts/generate_sdk.sh -l go",
+    "gen:sdk:debug": "pnpm gen:sdk:nodejs:debug && pnpm gen:sdk:go:debug",
+    "gen:sdk": "pnpm gen:sdk:nodejs && pnpm gen:sdk:go",
+    "gen:debug": "pnpm build:debug && pnpm gen:schema:debug && pnpm gen:sdk:debug",
+    "gen": "pnpm build && pnpm gen:schema && pnpm gen:sdk && pnpm postbuild",
+    "postinstall": "node bin/postinstall.cjs"
+  },
+  "dependencies": {
+    "@pulumi/azure-native": "^3.13.0",
+    "@pulumi/pulumi": "^3.219.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.1",
+    "typescript": "^5.9.3"
+  }
+}

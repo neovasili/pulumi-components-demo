@@ -39,7 +39,7 @@ export class StorageAccountWithContainer extends pulumi.ComponentResource {
     args: StorageAccountWithContainerArgs,
     opts?: pulumi.ComponentResourceOptions,
   ) {
-    super("components-demo:azure:StorageAccountWithContainer", name, {}, opts);
+    super("pulumi-components-demo:index:StorageAccountWithContainer", name, {}, opts);
 
     // Create the storage account
     const storageAccount = new azure.storage.StorageAccount(

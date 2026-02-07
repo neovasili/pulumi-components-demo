@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/neovasili/components-demo/sdk/go/componentsdemo/azure"
+	"github.com/neovasili/pulumi-components-demo/sdk/go/pulumicomponentsdemo"
 	"github.com/pulumi/pulumi-azure-native-sdk/resources/v2"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -17,7 +17,7 @@ func main() {
 		}
 
 		// Create a storage account with container using the component
-		storage, err := azure.NewStorageAccountWithContainer(ctx, "demo-storage", &azure.StorageAccountWithContainerArgs{
+		storage, err := pulumicomponentsdemo.NewStorageAccountWithContainer(ctx, "demo-storage", &pulumicomponentsdemo.StorageAccountWithContainerArgs{
 			ResourceGroupName: resourceGroup.Name,
 			Location:          resourceGroup.Location,
 			ContainerName:     pulumi.String("mycontainer"),
