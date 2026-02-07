@@ -1,0 +1,3 @@
+name: components-demo-example-nodejs
+runtime: nodejs
+description: Example using Pulumi Components Demo in Node.js

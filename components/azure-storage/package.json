@@ -1,0 +1,19 @@
+{
+  "name": "@components-demo/azure-storage",
+  "version": "0.1.0",
+  "description": "Azure Storage Account with Blob Container component",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist/"
+  },
+  "dependencies": {
+    "@pulumi/azure-native": "^3.13.0",
+    "@pulumi/pulumi": "^3.219.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.1",
+    "typescript": "^5.9.3"
+  }
+}

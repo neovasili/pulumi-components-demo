@@ -1,0 +1,82 @@
+{
+  "name": "pulumi-components-demo",
+  "version": "0.1.0",
+  "description": "Pulumi component resources monorepo",
+  "language": {
+    "csharp": {
+      "respectSchemaVersion": true
+    },
+    "go": {
+      "respectSchemaVersion": true,
+      "importBasePath": "github.com/neovasili/pulumi-components-demo/sdk/go/pulumicomponentsdemo",
+      "modulePath": "github.com/neovasili/pulumi-components-demo/sdk/go/pulumicomponentsdemo"
+    },
+    "java": {
+      "respectSchemaVersion": true
+    },
+    "nodejs": {
+      "respectSchemaVersion": true
+    },
+    "python": {
+      "respectSchemaVersion": true
+    }
+  },
+  "config": {},
+  "provider": {},
+  "resources": {
+    "pulumi-components-demo:index:StorageAccountWithContainer": {
+      "properties": {
+        "containerName": {
+          "type": "string"
+        },
+        "primaryBlobEndpoint": {
+          "type": "string"
+        },
+        "storageAccountId": {
+          "type": "string"
+        },
+        "storageAccountName": {
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "required": [
+        "containerName",
+        "primaryBlobEndpoint",
+        "storageAccountId",
+        "storageAccountName"
+      ],
+      "inputProperties": {
+        "containerName": {
+          "type": "string",
+          "description": "The name of the blob container to create"
+        },
+        "location": {
+          "type": "string",
+          "description": "The Azure location for the storage account"
+        },
+        "resourceGroupName": {
+          "type": "string",
+          "description": "The Azure resource group name where the storage account will be created"
+        },
+        "sku": {
+          "type": "string",
+          "description": "The SKU for the storage account (defaults to Standard_LRS)"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Tags to apply to the storage account"
+        }
+      },
+      "requiredInputs": [
+        "containerName",
+        "location",
+        "resourceGroupName"
+      ],
+      "isComponent": true
+    }
+  }
+}

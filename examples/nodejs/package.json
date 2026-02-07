@@ -1,0 +1,17 @@
+{
+  "name": "components-demo-example-nodejs",
+  "version": "0.1.0",
+  "description": "Example using Components Demo",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@pulumi/pulumi": "^3.219.0",
+    "pulumi-components-demo": "file:../../pulumi-components-demo-0.1.0.tgz"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.1",
+    "typescript": "^5.9.3"
+  }
+}

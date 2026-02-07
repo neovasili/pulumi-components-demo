@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+"use strict";
+
+/**
+ * Thin wrapper that makes this npm package act as a Pulumi component plugin.
+ * It delegates to Pulumi's NodeJS "run-plugin" entry, pointing at this package root.
+ */
+
+const path = require("path");
+
+async function main() {
+  // package root = .. (since this file is <root>/bin/...)
+  const packageRoot = path.resolve(__dirname, "..");
+
+  // Pulumi's NodeJS plugin runner
+  // This is shipped with @pulumi/pulumi
+  const runPlugin = require("@pulumi/pulumi/cmd/run-plugin");
+
+  // run-plugin expects to run a program from a directory
+  await runPlugin.run(packageRoot);
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
