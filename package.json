@@ -29,14 +29,21 @@
     "gen:debug": "pnpm build:debug && pnpm gen:schema:debug && pnpm gen:sdk:debug",
     "gen": "pnpm build && pnpm gen:schema && pnpm gen:sdk && pnpm postbuild",
     "postinstall": "node bin/postinstall.cjs",
-    "local:install": "./scripts/local_install.sh"
+    "local:install": "./scripts/local_install.sh",
+    "release": "semantic-release"
   },
   "dependencies": {
     "@pulumi/azure-native": "^3.13.0",
     "@pulumi/pulumi": "^3.219.0"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.2.6",
+    "@semantic-release/npm": "^11.0.3",
     "@types/node": "^25.2.1",
+    "semantic-release": "^23.1.1",
     "typescript": "^5.9.3"
   }
 }

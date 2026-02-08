@@ -312,7 +312,7 @@ The post-build script performs additional tasks needed for the SDKs and plugin r
 ```typescript
 import * as pulumi from "@pulumi/pulumi";
 import * as azure from "@pulumi/azure-native";
-import * as components from "@pulumi/pulumi-components-demo";
+import * as components from "@neovasili/pulumi-components-demo";
 
 // Create a resource group
 const resourceGroup = new azure.resources.ResourceGroup("demo-rg", {
