@@ -1,6 +1,6 @@
 {
   "name": "@components-demo/azure-storage",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Azure Storage Account with Blob Container component",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

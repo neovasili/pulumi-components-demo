@@ -1,6 +1,6 @@
 {
   "name": "pulumi-components-demo",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Pulumi component resources monorepo",
   "language": {
     "csharp": {
