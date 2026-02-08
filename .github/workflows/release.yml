@@ -31,7 +31,6 @@ jobs:
         with:
           node-version: 24
           cache: "pnpm"
-          registry-url: "https://registry.npmjs.org"
 
       - name: Setup Go
         uses: actions/setup-go@v6
@@ -48,4 +47,3 @@ jobs:
         run: pnpm exec semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
