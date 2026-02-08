@@ -43,7 +43,7 @@ for os_arch in "${PLATFORMS[@]}"; do
   (cd "${STAGE_DIR}" && pnpm install --prod --ignore-scripts --node-linker=hoisted)
 
   TARBALL="${OUT_DIR}/pulumi-resource-${PLUGIN_NAME}-v${VERSION}-${os_arch}.tar.gz"
-  tar -C "${STAGE_DIR}" -h \
+  tar -C "${STAGE_DIR}" -h --hard-dereference \
     --exclude='./node_modules/.pnpm' \
     --exclude='./node_modules/.pnpm/**' \
     -czf "${TARBALL}" .
