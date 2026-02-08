@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.4...v1.0.5) (2026-02-08)
+
+
+### Bug Fixes
+
+* ensure provider binary is in the tarball ([31083e4](https://github.com/neovasili/pulumi-components-demo/commit/31083e4b3372c04c7060282f7b485fbfe1041c1d))
+
 ## [1.0.4](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.3...v1.0.4) (2026-02-08)
 
 
