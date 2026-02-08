@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.1...v1.0.2) (2026-02-08)
+
+
+### Bug Fixes
+
+* repository url ([271d5d5](https://github.com/neovasili/pulumi-components-demo/commit/271d5d520567d01b0e39174bbdb1df8a2aa30ba2))
+
 ## [1.0.1](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.0...v1.0.1) (2026-02-08)
 
 

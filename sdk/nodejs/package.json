@@ -1,6 +1,6 @@
 {
   "name": "@neovasili/pulumi-components-demo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "build": "tsc"
   },
@@ -14,7 +14,7 @@
   "pulumi": {
     "resource": true,
     "name": "pulumi-components-demo",
-    "version": "1.0.1"
+    "version": "1.0.2"
   },
   "main": "bin/index.js",
   "types": "bin/index.d.ts",
