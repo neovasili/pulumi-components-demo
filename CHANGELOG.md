@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.6...v1.0.7) (2026-02-08)
+
+
+### Bug Fixes
+
+* switch back to npm ([6c38629](https://github.com/neovasili/pulumi-components-demo/commit/6c38629fd8bb9854caeaf442b41ab93fa9570cb4))
+
 ## [1.0.6](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.5...v1.0.6) (2026-02-08)
 
 
