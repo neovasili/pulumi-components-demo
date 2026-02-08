@@ -9,7 +9,7 @@ module.exports = {
       {
         prepareCmd: "node scripts/prepare-release.mjs ${nextRelease.version}",
         publishCmd:
-          "cd sdk/nodejs && npm publish --provenance --access public --tag ${nextRelease.channel || 'latest'}",
+          "cd sdk/nodejs && npm publish --provenance --access public --tag ${nextRelease.channel || 'latest'} && cd ../.. && bash scripts/tag_go_module.sh ${nextRelease.version} ${nextRelease.gitHead}",
       },
     ],
     [
