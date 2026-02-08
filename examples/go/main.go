@@ -17,7 +17,7 @@ func main() {
 		}
 
 		// Create a storage account with container using the component
-		storage, err := pulumicomponentsdemo.NewStorageAccountWithContainer(ctx, "demo-storage", &pulumicomponentsdemo.StorageAccountWithContainerArgs{
+		storage, err := pulumicomponentsdemo.NewStorageAccountWithContainer(ctx, "neovasilidemo", &pulumicomponentsdemo.StorageAccountWithContainerArgs{
 			ResourceGroupName: resourceGroup.Name,
 			Location:          resourceGroup.Location,
 			ContainerName:     pulumi.String("mycontainer"),

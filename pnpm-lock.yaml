@@ -38,6 +38,22 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  examples/nodejs:
+    dependencies:
+      '@pulumi/pulumi':
+        specifier: ^3.219.0
+        version: 3.219.0(typescript@5.9.3)
+      '@pulumi/pulumi-components-demo':
+        specifier: file:../../sdk/nodejs
+        version: file:sdk/nodejs(typescript@5.9.3)
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
 packages:
 
   '@grpc/grpc-js@1.14.3':
@@ -237,6 +253,9 @@ packages:
 
   '@pulumi/azure-native@3.13.0':
     resolution: {integrity: sha512-EFm1hYPpOFKuTt9RGBsEyET3LUrwAN3uMQcbvm6IXUW4HxhkDj5L2z+9Wmvup7GQlwQsp8zZnfn5sZMlLx4jQg==}
+
+  '@pulumi/pulumi-components-demo@file:sdk/nodejs':
+    resolution: {directory: sdk/nodejs, type: directory}
 
   '@pulumi/pulumi@3.219.0':
     resolution: {integrity: sha512-0AO1ZBJooKALToZYvPj/93PpToGA2rEKvIGQi95zNHevTTC3ibQrKXJDLwQzjHy6HZrON2jbxzakKrU4C2w+hA==}
@@ -1280,6 +1299,14 @@ snapshots:
   '@protobufjs/utf8@1.1.0': {}
 
   '@pulumi/azure-native@3.13.0(typescript@5.9.3)':
+    dependencies:
+      '@pulumi/pulumi': 3.219.0(typescript@5.9.3)
+    transitivePeerDependencies:
+      - supports-color
+      - ts-node
+      - typescript
+
+  '@pulumi/pulumi-components-demo@file:sdk/nodejs(typescript@5.9.3)':
     dependencies:
       '@pulumi/pulumi': 3.219.0(typescript@5.9.3)
     transitivePeerDependencies:

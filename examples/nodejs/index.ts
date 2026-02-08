@@ -1,6 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as azure from "@pulumi/azure-native";
-import * as components from "pulumi-components-demo";
+import * as components from "@pulumi/pulumi-components-demo";
 
 // Create a resource group
 const resourceGroup = new azure.resources.ResourceGroup("demo-rg", {

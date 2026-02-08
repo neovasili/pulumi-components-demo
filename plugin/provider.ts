@@ -1,4 +1,5 @@
 import { componentProviderHost } from "@pulumi/pulumi/provider/experimental";
+import * as path from "path";
 
 // plugin/provider.ts
 // process.stdout.write(`PULUMI_ENGINE=${String(process.env.PULUMI_ENGINE)}\n`);
@@ -13,5 +14,7 @@ import { StorageAccountWithContainer } from "../components/azure-storage/Storage
 
 componentProviderHost({
   name: "pulumi-components-demo",
+  // Point the analyzer at the package root that contains tsconfig + sources.
+  dirname: path.resolve(__dirname, "..", ".."),
   components: [StorageAccountWithContainer],
 });

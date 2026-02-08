@@ -31,4 +31,15 @@ printf " ->${CYAN} Applying mod tidy to sdk/go/pulumicomponentsdemo...${RESET}\n
 printf " ->${CYAN} Copy package.json to provider built directory...${RESET}\n"
 cp package.json dist/plugin/
 
+printf " ->${CYAN} Patching Node SDK package.json (main/types)...${RESET}\n"
+tmp_pkg=$(mktemp)
+jq '. + {main:"bin/index.js", types:"bin/index.d.ts"}' sdk/nodejs/package.json > "${tmp_pkg}"
+mv "${tmp_pkg}" sdk/nodejs/package.json
+
+printf " ->${CYAN} Building Node SDK...${RESET}\n"
+tsc -p sdk/nodejs/tsconfig.json
+
+printf " ->${CYAN} Copying Node SDK package.json into bin/ (for runtime version lookup)...${RESET}\n"
+cp sdk/nodejs/package.json sdk/nodejs/bin/package.json
+
 printf "\n${GREEN}✅ Post-build steps completed successfully!${RESET}\n"

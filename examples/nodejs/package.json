@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@pulumi/pulumi": "^3.219.0",
-    "pulumi-components-demo": "file:../../pulumi-components-demo-0.1.0.tgz"
+    "@pulumi/pulumi-components-demo": "file:../../sdk/nodejs"
   },
   "devDependencies": {
     "@types/node": "^25.2.1",

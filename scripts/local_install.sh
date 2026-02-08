@@ -51,8 +51,15 @@ printf " ->${CYAN} Copying plugin files...${RESET}\n"
 cp -f package.json "${STAGE_DIR}/"
 cp -f pnpm-lock.yaml "${STAGE_DIR}/"
 cp -f PulumiPlugin.yaml "${STAGE_DIR}/"
+cp -f tsconfig.json "${STAGE_DIR}/"
+cp -f index.ts "${STAGE_DIR}/"
+cp -R components "${STAGE_DIR}/components"
+cp -R plugin "${STAGE_DIR}/plugin"
 cp -R dist "${STAGE_DIR}/dist"
 cp -R bin "${STAGE_DIR}/bin"
+
+printf " ->${CYAN} Removing nested node_modules from components (workspace deps)...${RESET}\n"
+find "${STAGE_DIR}/components" -type d -name node_modules -prune -exec rm -rf '{}' +
 
 printf " ->${CYAN} Creating plugin executable...${RESET}\n"
 PLUGIN_EXE="${STAGE_DIR}/pulumi-resource-${PLUGIN_NAME}"
@@ -69,7 +76,8 @@ fi
 
 # Run the provider server entrypoint (compiled JS).
 # IMPORTANT: do not write anything to stdout from here.
-exec node "${PLUGIN_DIR}/dist/plugin/provider.js"
+# Forward Pulumi's engine address/flags to the provider.
+exec node "${PLUGIN_DIR}/dist/plugin/provider.js" "$@"
 EON
 
 chmod +x "${PLUGIN_EXE}"
