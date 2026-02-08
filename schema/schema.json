@@ -1,6 +1,6 @@
 {
   "name": "pulumi-components-demo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Pulumi component resources monorepo",
   "language": {
     "csharp": {
@@ -78,5 +78,6 @@
       ],
       "isComponent": true
     }
-  }
+  },
+  "pluginDownloadURL": "github://api.github.com/neovasili/pulumi-components-demo"
 }

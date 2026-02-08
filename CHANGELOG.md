@@ -1,3 +1,12 @@
+## [1.0.3](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.2...v1.0.3) (2026-02-08)
+
+
+### Bug Fixes
+
+* build tarball script ([cea818e](https://github.com/neovasili/pulumi-components-demo/commit/cea818e5eeb9ca4a16254e47e34e5c6b0a74311d))
+* build tarball script ([9f03f4c](https://github.com/neovasili/pulumi-components-demo/commit/9f03f4c691f48619145229a527ebc1dd04c780ba))
+* plugin download url and tarballs ([69101d9](https://github.com/neovasili/pulumi-components-demo/commit/69101d95283ecf7bd6b95cd8a067716922d36663))
+
 ## [1.0.2](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.1...v1.0.2) (2026-02-08)
 
 

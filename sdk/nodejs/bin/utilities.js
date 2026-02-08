@@ -54,7 +54,7 @@ function getVersion() {
 }
 /** @internal */
 function resourceOptsDefaults() {
-    return { version: getVersion() };
+    return { version: getVersion(), pluginDownloadURL: "github://api.github.com/neovasili/pulumi-components-demo" };
 }
 /** @internal */
 function lazyLoad(exports, props, loadModule) {
