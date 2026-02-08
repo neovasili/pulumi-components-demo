@@ -43,6 +43,7 @@ tmp_schema="$(mktemp)"
 if ! jq '
   .language.go.importBasePath = "github.com/neovasili/pulumi-components-demo/sdk/go/pulumicomponentsdemo"
 | .language.go.modulePath     = "github.com/neovasili/pulumi-components-demo/sdk/go/pulumicomponentsdemo"
+| .pluginDownloadURL          = "github://api.github.com/neovasili/pulumi-components-demo"
 ' schema/schema.json > "${tmp_schema}"; then
   printf "\n${RED}Error: Failed to patch schema for Go SDK!${RESET}\n"
   rm -f "${tmp_schema}"

@@ -43,3 +43,4 @@ updateJson(
 updateYamlVersion(path.join(repoRoot, "PulumiPlugin.yaml"), version);
 
 execFileSync("pnpm", ["gen"], { stdio: "inherit" });
+execFileSync("bash", ["scripts/build_plugin_tarballs.sh"], { stdio: "inherit" });

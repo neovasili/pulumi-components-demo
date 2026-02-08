@@ -34,6 +34,7 @@ module.exports = {
       {
         failComment: false,
         labels: false,
+        assets: ["release-artifacts/*.tar.gz"],
       },
     ],
   ],

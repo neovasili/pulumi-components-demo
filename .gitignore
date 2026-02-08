@@ -1,6 +1,8 @@
+components/azure-storage/node_modules/.bin/
 node_modules/
 *.log
 .pulumi/
 dist/
+release-artifacts/
 
 pulumi-components-demo-*.tgz
