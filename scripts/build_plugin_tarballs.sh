@@ -35,6 +35,12 @@ for os_arch in "${PLATFORMS[@]}"; do
   cp -R dist "${STAGE_DIR}/dist"
   cp -R bin "${STAGE_DIR}/bin"
 
+  # Ensure the plugin executable is at the root (Pulumi expects this).
+  if [ -f "${STAGE_DIR}/bin/pulumi-resource-${PLUGIN_NAME}" ]; then
+    cp -f "${STAGE_DIR}/bin/pulumi-resource-${PLUGIN_NAME}" "${STAGE_DIR}/pulumi-resource-${PLUGIN_NAME}"
+    chmod +x "${STAGE_DIR}/pulumi-resource-${PLUGIN_NAME}"
+  fi
+
   # Remove workspace node_modules to avoid symlinks from pnpm
   find "${STAGE_DIR}/components" -type d -name node_modules -prune -exec rm -rf '{}' +
 
