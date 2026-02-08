@@ -39,11 +39,15 @@ for os_arch in "${PLATFORMS[@]}"; do
   # Remove workspace node_modules to avoid symlinks from pnpm
   find "${STAGE_DIR}/components" -type d -name node_modules -prune -exec rm -rf '{}' +
 
-  # Install deps with npm to avoid symlinks in node_modules (Pulumi tarball rejects them)
-  (cd "${STAGE_DIR}" && npm install --omit=dev --no-package-lock)
+  # Install deps with pnpm. Use hoisted linker + ignore scripts to avoid postinstall
+  # and then dereference symlinks when creating the tarball.
+  (cd "${STAGE_DIR}" && pnpm install --prod --frozen-lockfile --ignore-scripts --node-linker=hoisted)
 
   TARBALL="${OUT_DIR}/pulumi-resource-${PLUGIN_NAME}-v${VERSION}-${os_arch}.tar.gz"
-  tar -C "${STAGE_DIR}" -czf "${TARBALL}" .
+  tar -C "${STAGE_DIR}" -h \
+    --exclude='./node_modules/.pnpm' \
+    --exclude='./node_modules/.pnpm/**' \
+    -czf "${TARBALL}" .
 
   rm -rf "${STAGE_DIR}"
 done
