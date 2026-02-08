@@ -17,5 +17,13 @@
     "version": "1.0.1"
   },
   "main": "bin/index.js",
-  "types": "bin/index.d.ts"
+  "types": "bin/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neovasili/pulumi-components-demo"
+  },
+  "homepage": "https://github.com/neovasili/pulumi-components-demo#readme",
+  "bugs": {
+    "url": "https://github.com/neovasili/pulumi-components-demo/issues"
+  }
 }

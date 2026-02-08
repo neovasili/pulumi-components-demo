@@ -28,17 +28,19 @@ printf " ->${CYAN} Replace module path in sdk/go/pulumicomponentsdemo/go.mod...$
 printf " ->${CYAN} Applying mod tidy to sdk/go/pulumicomponentsdemo...${RESET}\n"
 ( cd sdk/go/pulumicomponentsdemo/ && go mod tidy )
 
-printf " ->${CYAN} Fixing npm package name in sdk/nodejs/package.json...${RESET}\n"
-tmp_pkg=$(mktemp)
-jq '. + {name:"@neovasili/pulumi-components-demo"}' sdk/nodejs/package.json > "${tmp_pkg}"
-mv "${tmp_pkg}" sdk/nodejs/package.json
-
 printf " ->${CYAN} Copy package.json to provider built directory...${RESET}\n"
 cp package.json dist/plugin/
 
-printf " ->${CYAN} Patching Node SDK package.json (main/types)...${RESET}\n"
+printf " ->${CYAN} Patching Node SDK package.json (main/types/repository)...${RESET}\n"
 tmp_pkg=$(mktemp)
-jq '. + {main:"bin/index.js", types:"bin/index.d.ts"}' sdk/nodejs/package.json > "${tmp_pkg}"
+jq '. + {
+  name:"@neovasili/pulumi-components-demo",
+  main:"bin/index.js",
+  types:"bin/index.d.ts",
+  repository:{type:"git", url:"https://github.com/neovasili/pulumi-components-demo"},
+  homepage:"https://github.com/neovasili/pulumi-components-demo#readme",
+  bugs:{url:"https://github.com/neovasili/pulumi-components-demo/issues"}
+}' sdk/nodejs/package.json > "${tmp_pkg}"
 mv "${tmp_pkg}" sdk/nodejs/package.json
 
 printf " ->${CYAN} Building Node SDK...${RESET}\n"
