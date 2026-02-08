@@ -8,16 +8,18 @@ A Pulumi component resource package demonstrating how to build reusable infrastr
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Components](#components)
-    - [Azure Storage (`components-demo:index:StorageAccountWithContainer`)](#azure-storage-components-demoindexstorageaccountwithcontainer)
+    - [Azure Storage (`pulumi-components-demo:index:StorageAccountWithContainer`)](#azure-storage-pulumi-components-demoindexstorageaccountwithcontainer)
   - [Repository Structure](#repository-structure)
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
-    - [Option 1: Manual Setup with pnpm](#option-1-manual-setup-with-pnpm)
-    - [Option 2: Manual Setup with Scripts](#option-2-manual-setup-with-scripts)
+    - [Option 1: pnpm Workflow (Recommended)](#option-1-pnpm-workflow-recommended)
+    - [Option 2: Scripted Workflow](#option-2-scripted-workflow)
+    - [Option 3: Local Plugin Install](#option-3-local-plugin-install)
     - [What's Next?](#whats-next)
   - [Development Workflow](#development-workflow)
     - [Using pnpm Scripts (Recommended)](#using-pnpm-scripts-recommended)
     - [Using Build Scripts (Alternative)](#using-build-scripts-alternative)
+    - [Post-build Steps](#post-build-steps)
   - [Usage](#usage)
     - [Node.js/TypeScript](#nodejstypescript)
     - [Go](#go)
@@ -29,13 +31,15 @@ A Pulumi component resource package demonstrating how to build reusable infrastr
   - [Build Scripts Reference](#build-scripts-reference)
   - [Project Files](#project-files)
     - [Configuration Files](#configuration-files)
-    - [Key Files](#key-files)
+    - [Runtime Files](#runtime-files)
+    - [Generated Artifacts](#generated-artifacts)
   - [Architecture](#architecture)
     - [Build Process Flow](#build-process-flow)
     - [Component Resource Lifecycle](#component-resource-lifecycle)
   - [pnpm Workspace](#pnpm-workspace)
   - [Troubleshooting](#troubleshooting)
     - [SDK Generation Issues](#sdk-generation-issues)
+    - [Local Plugin Install Issues](#local-plugin-install-issues)
     - [Build Errors](#build-errors)
     - [Example Not Finding SDK](#example-not-finding-sdk)
     - [Component Provider Not Found](#component-provider-not-found)
@@ -60,7 +64,7 @@ This repository demonstrates how to create Pulumi component resources that:
 
 ## Components
 
-### Azure Storage (`components-demo:index:StorageAccountWithContainer`)
+### Azure Storage (`pulumi-components-demo:index:StorageAccountWithContainer`)
 
 A reusable component that creates an Azure Storage Account (StorageV2) with a Blob Container in a single resource.
 
@@ -90,7 +94,17 @@ A reusable component that creates an Azure Storage Account (StorageV2) with a Bl
 
 ```shell
 .
+├── .dev/                        # Local development scripts
+│   ├── local_install.sh         # Install plugin into Pulumi cache (dev)
+│   ├── local_install_sdk.sh     # Local SDK install helper (dev)
+│   └── test.sh                  # Sanity checks for plugin install
+├── bin/                         # Runtime binaries and install helpers
+│   ├── postinstall.cjs          # Postinstall hook (links plugin into PULUMI_HOME)
+│   └── pulumi-resource-pulumi-components-demo
+├── plugin/
+│   └── provider.ts              # Provider host entrypoint
 ├── PulumiPlugin.yaml            # Pulumi plugin metadata
+├── go.mod                       # Go module for SDK post-build
 ├── package.json                 # Root package with build scripts
 ├── pnpm-workspace.yaml          # pnpm workspace configuration
 ├── tsconfig.json                # TypeScript configuration
@@ -99,7 +113,7 @@ A reusable component that creates an Azure Storage Account (StorageV2) with a Bl
 │   └── azure-storage/           # Azure Storage component
 │       ├── package.json         # Component package definition
 │       ├── index.ts             # Component exports
-│       └── storageAccountWithContainer.ts  # Component implementation
+│       └── StorageAccountWithContainer.ts  # Component implementation
 ├── schema/
 │   └── schema.json              # Pulumi package schema for SDK generation
 ├── sdk/                         # Auto-generated SDKs
@@ -116,55 +130,73 @@ A reusable component that creates an Azure Storage Account (StorageV2) with a Bl
 │       ├── go.mod
 │       └── Pulumi.yaml
 └── scripts/                     # Build automation scripts
-    ├── setup.sh                 # Automated setup script
     ├── build.sh                 # Build the project
     ├── generate_schema.sh       # Generate Pulumi schema
     ├── generate_sdk.sh          # Generate SDK for specific language
-    └── common.sh                # Shared utilities and color definitions
+  ├── local_install.sh          # Create and install plugin tarball
+  ├── post_build.sh             # Post-build steps for SDKs and plugin
+  └── common.sh                # Shared utilities and color definitions
 ```
 
 ## Prerequisites
 
 - [Pulumi CLI](https://www.pulumi.com/docs/get-started/install/) (v3.0+)
 - Node.js 18+ and npm
-- pnpm 10.28+ (automatically installed by setup script)
-- Go 1.21+ (for Go SDK and Go examples)
+- pnpm 10.28+
+- Go 1.25+ (for Go SDK and Go examples)
 - Azure CLI (for running examples)
+- jq (required by local install scripts)
 
 ## Quick Start
 
-### Option 1: Manual Setup with pnpm
+### Option 1: pnpm Workflow (Recommended)
 
 ```bash
-# 1. Install pnpm (if not already installed)
-npm install -g pnpm
-
-# 2. Install dependencies
+# 1. Install dependencies
 pnpm install
 
-# 3. Build and generate everything
+# 2. Build and generate everything (includes post-build steps)
 pnpm gen
 ```
 
-### Option 2: Manual Setup with Scripts
+During `pnpm install`, the postinstall hook links the plugin binary into `PULUMI_HOME/bin` for local usage.
+
+### Option 2: Scripted Workflow
 
 ```bash
-# 1. Install pnpm (if not already installed)
-npm install -g pnpm
-
-# 2. Install dependencies
+# 1. Install dependencies
 pnpm install
 
-# 3. Build the provider
+# 2. Build the provider
 ./scripts/build.sh
 
-# 4. Generate schema
+# 3. Generate schema
 ./scripts/generate_schema.sh
 
-# 5. Generate SDKs
+# 4. Generate SDKs
 ./scripts/generate_sdk.sh -l nodejs
 ./scripts/generate_sdk.sh -l go
+
+# 5. Run post-build steps (Go module, Node SDK build)
+./scripts/post_build.sh
 ```
+
+### Option 3: Local Plugin Install
+
+If you want to test the provider as a local Pulumi plugin:
+
+```bash
+# Build everything first
+pnpm gen
+
+# Install plugin into Pulumi using a tarball (recommended)
+pnpm local:install
+
+# Alternative: direct install into Pulumi cache (dev)
+./.dev/local_install.sh
+```
+
+Note: `./scripts/local_install.sh` targets `darwin-arm64` by default. Update `OS_ARCH` if you need a different platform.
 
 ### What's Next?
 
@@ -172,8 +204,8 @@ After setup, you can:
 
 1. **Explore the Component**:
 
-   - Browse [components/azure-storage/storageAccountWithContainer.ts](components/azure-storage/storageAccountWithContainer.ts#L1)
-   - Review [schema/schema.json](schema/schema.json#L1) to see the generated schema
+  - Browse [components/azure-storage/StorageAccountWithContainer.ts](components/azure-storage/StorageAccountWithContainer.ts#L1)
+  - Review [schema/schema.json](schema/schema.json#L1) to see the generated schema
 
 2. **Try an Example**:
 
@@ -198,11 +230,17 @@ After setup, you can:
 # Build all TypeScript files
 pnpm build
 
+# Build with debug logging
+pnpm build:debug
+
 # Clean build artifacts
 pnpm clean
 
 # Generate schema from provider
 pnpm gen:schema
+
+# Generate schema with debug logging
+pnpm gen:schema:debug
 
 # Generate Node.js SDK only
 pnpm gen:sdk:nodejs
@@ -210,11 +248,17 @@ pnpm gen:sdk:nodejs
 # Generate Go SDK only
 pnpm gen:sdk:go
 
-# Generate all SDKs
-pnpm gen:sdk
+# Generate SDKs with debug logging
+pnpm gen:sdk:debug
 
-# Complete build: clean, build, schema, and SDKs
+# Complete build: build, schema, SDKs, and post-build steps
 pnpm gen
+
+# Full debug pipeline
+pnpm gen:debug
+
+# Install local plugin via tarball
+pnpm local:install
 ```
 
 ### Using Build Scripts (Alternative)
@@ -237,6 +281,12 @@ The `scripts/` directory contains individual bash scripts for more granular cont
 
 # Generate with debug output
 ./scripts/generate_sdk.sh -l nodejs -d
+
+# Run post-build steps
+./scripts/post_build.sh
+
+# Install local plugin via tarball
+./scripts/local_install.sh
 ```
 
 **Build Script Features:**
@@ -246,6 +296,15 @@ The `scripts/` directory contains individual bash scripts for more granular cont
 - Automatic cleanup of previous artifacts
 - Error handling and validation
 
+### Post-build Steps
+
+The post-build script performs additional tasks needed for the SDKs and plugin runtime:
+
+- Copies the root go.mod into sdk/go/pulumicomponentsdemo and updates the module path
+- Runs go mod tidy for the Go SDK
+- Patches Node SDK package.json main/types fields and builds the Node SDK
+- Copies package.json into dist/plugin for runtime metadata
+
 ## Usage
 
 ### Node.js/TypeScript
@@ -253,7 +312,7 @@ The `scripts/` directory contains individual bash scripts for more granular cont
 ```typescript
 import * as pulumi from "@pulumi/pulumi";
 import * as azure from "@pulumi/azure-native";
-import * as components from "@pulumi/components-demo";
+import * as components from "@pulumi/pulumi-components-demo";
 
 // Create a resource group
 const resourceGroup = new azure.resources.ResourceGroup("demo-rg", {
@@ -285,7 +344,7 @@ export const primaryBlobEndpoint = storage.primaryBlobEndpoint;
 package main
 
 import (
-  "github.com/neovasili/components-demo/sdk/go/componentsdemo/azure"
+  "github.com/neovasili/pulumi-components-demo/sdk/go/pulumicomponentsdemo"
   "github.com/pulumi/pulumi-azure-native-sdk/resources/v2"
   "github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -301,7 +360,7 @@ func main() {
     }
 
     // Create storage with component
-    storage, err := azure.NewStorageAccountWithContainer(ctx, "demo-storage", &azure.StorageAccountWithContainerArgs{
+    storage, err := pulumicomponentsdemo.NewStorageAccountWithContainer(ctx, "demo-storage", &pulumicomponentsdemo.StorageAccountWithContainerArgs{
       ResourceGroupName: resourceGroup.Name,
       Location:          resourceGroup.Location,
       ContainerName:     pulumi.String("mycontainer"),
@@ -395,7 +454,7 @@ To add a new component to this package:
 
    export class MyComponent extends pulumi.ComponentResource {
        constructor(name: string, args: MyComponentArgs, opts?: pulumi.ComponentResourceOptions) {
-           super("components-demo:index:MyComponent", name, {}, opts);
+           super("pulumi-components-demo:index:MyComponent", name, {}, opts);
            // Implementation
            this.registerOutputs({});
        }
@@ -437,22 +496,32 @@ To add a new component to this package:
 
 | Script | Description |
 | -------- | ------------- |
-| `pnpm build` | Compile TypeScript to JavaScript |
+| `pnpm build` | Build TypeScript provider and components |
+| `pnpm build:debug` | Build with verbose output |
 | `pnpm clean` | Remove build artifacts and SDKs |
-| `pnpm gen:schema` | Generate Pulumi schema from provider |
+| `pnpm gen:schema` | Generate Pulumi schema |
+| `pnpm gen:schema:debug` | Generate schema with verbose output |
 | `pnpm gen:sdk:nodejs` | Generate Node.js/TypeScript SDK |
+| `pnpm gen:sdk:nodejs:debug` | Generate Node.js SDK with verbose output |
 | `pnpm gen:sdk:go` | Generate Go SDK |
+| `pnpm gen:sdk:go:debug` | Generate Go SDK with verbose output |
 | `pnpm gen:sdk` | Generate all SDKs |
-| `pnpm gen` | Full build: clean, compile, schema, and SDKs |
+| `pnpm gen:sdk:debug` | Generate all SDKs with verbose output |
+| `pnpm gen` | Build, generate schema/SDKs, and run post-build steps |
+| `pnpm gen:debug` | Full debug pipeline |
+| `pnpm local:install` | Install local plugin via tarball |
+| `pnpm postbuild` | Lifecycle script: runs post-build steps |
+| `pnpm postinstall` | Lifecycle script: links plugin binary into PULUMI_HOME |
 
 ## Build Scripts Reference
 
 | Script | Options | Description |
 | -------- | --------- | ------------- |
-| `./scripts/setup.sh` | - | Automated setup: install dependencies, build, generate SDKs |
 | `./scripts/build.sh` | `-d` (debug) | Compile TypeScript provider and components |
 | `./scripts/generate_schema.sh` | `-d` (debug) | Generate Pulumi package schema |
 | `./scripts/generate_sdk.sh` | `-l <language>` `-d` (debug) | Generate SDK for specific language |
+| `./scripts/post_build.sh` | `-d` (debug) | Post-build steps for SDKs and plugin runtime |
+| `./scripts/local_install.sh` | `-d` (debug) | Package and install local plugin via tarball |
 
 ## Project Files
 
@@ -460,14 +529,21 @@ To add a new component to this package:
 
 - **`PulumiPlugin.yaml`**: Defines the Pulumi plugin name, version, and runtime
 - **`package.json`**: Root package configuration with scripts and dependencies
-- **`pnpm-workspace.yaml`**: Defines workspace packages (`components/*`)
+- **`pnpm-workspace.yaml`**: Defines workspace packages (`components/**`, `examples/*`)
 - **`tsconfig.json`**: TypeScript compiler configuration
 - **`.gitignore`**: Git ignore patterns (node_modules, dist, bin, etc.)
+- **`go.mod`**: Go module used during post-build for the SDK
 
-### Key Files
+### Runtime Files
 
 - **`index.ts`**: Main entry point that exports all components
 - **`schema/schema.json`**: Generated Pulumi schema for SDK generation
+- **`plugin/provider.ts`**: Provider host that registers component resources
+- **`bin/pulumi-resource-pulumi-components-demo`**: Plugin binary entrypoint
+- **`bin/postinstall.cjs`**: Postinstall hook to link the plugin into PULUMI_HOME
+
+### Generated Artifacts
+
 - **`dist/`**: Compiled JavaScript output (generated by TypeScript)
 - **`sdk/`**: Generated SDKs for different languages (auto-generated)
 
@@ -485,7 +561,7 @@ This project uses Pulumi's component resource model to create reusable infrastru
 ```shell
 1. TypeScript Components (components/azure-storage/*.ts)
          ↓
-2. Provider Entry Point (index.ts)
+2. Provider Entry Point (index.ts + plugin/provider.ts)
          ↓
 3. TypeScript Compilation (tsc → dist/)
          ↓
@@ -493,15 +569,17 @@ This project uses Pulumi's component resource model to create reusable infrastru
          ↓
 5. SDK Generation (pulumi package gen-sdk)
          ↓
-6. Language-specific SDKs (sdk/nodejs, sdk/go)
+6. Post-build Steps (go.mod patching, Node SDK build)
          ↓
-7. Examples consume SDKs
+7. Language-specific SDKs (sdk/nodejs, sdk/go)
+         ↓
+8. Examples consume SDKs
 ```
 
 ### Component Resource Lifecycle
 
 1. **Component Definition**: TypeScript class extends `pulumi.ComponentResource`
-2. **Registration**: Component registered with unique type (e.g., `components-demo:index:StorageAccountWithContainer`)
+2. **Registration**: Component registered with unique type (e.g., `pulumi-components-demo:index:StorageAccountWithContainer`)
 3. **Schema Definition**: Input/output properties defined in schema.json
 4. **SDK Generation**: Pulumi CLI generates type-safe bindings
 5. **Usage**: Developers use generated SDKs in their infrastructure code
@@ -512,9 +590,8 @@ This monorepo uses pnpm workspaces as defined in [pnpm-workspace.yaml](pnpm-work
 
 ```yaml
 packages:
-  - "components/*"
-  - "provider"
-  # - "examples/*"  # Examples are kept separate
+  - "components/**"
+  - "examples/*"
 ```
 
 **Benefits:**
@@ -529,7 +606,7 @@ packages:
 
 - Each component in `components/` is a separate pnpm workspace package
 - Components can have independent versions and dependencies
-- Examples are intentionally excluded from workspace for realistic usage testing
+- Examples are included as workspace packages for easier local testing
 
 ## Troubleshooting
 
@@ -541,6 +618,15 @@ If SDK generation fails:
 2. Verify schema is valid: `cat schema/schema.json | jq .`
 3. Check Pulumi CLI version: `pulumi version` (v3.0+ required)
 4. Try debug mode: `./scripts/generate_sdk.sh -l nodejs -d`
+
+### Local Plugin Install Issues
+
+If `pulumi plugin install` or local installation fails:
+
+1. Ensure build artifacts exist: `pnpm gen`
+2. Verify the tarball exists: `/tmp/pulumi-resource-pulumi-components-demo-v0.1.0-darwin-arm64.tar.gz`
+3. Check Pulumi plugin list: `pulumi plugin ls`
+4. Re-run the installer: `pnpm local:install`
 
 ### Build Errors
 
@@ -578,17 +664,29 @@ If Pulumi can't find the component provider:
 1. Verify `PulumiPlugin.yaml` exists in the root
 2. Check that `dist/` folder contains compiled JavaScript
 3. Ensure the package is properly built: `pnpm build`
+4. Verify the binary is present: `bin/pulumi-resource-pulumi-components-demo`
+5. Run `pnpm install` to trigger the postinstall hook that links the binary into `PULUMI_HOME`
 
 ## Local Development Tools
 
 The `.dev/` directory contains utilities for local development:
 
+- **`local_install.sh`**: Install plugin into Pulumi cache (dev)
 - **`local_install_sdk.sh`**: Install SDKs locally for testing
+- **`test.sh`**: Verify plugin is installed in Pulumi
 
   ```bash
+  ./.dev/local_install.sh
   ./.dev/local_install_sdk.sh -l nodejs
   ./.dev/local_install_sdk.sh -l go
+  ./.dev/test.sh
   ```
+
+You can also install the plugin via the scripted tarball approach:
+
+```bash
+./scripts/local_install.sh
+```
 
 ## Contributing
 
@@ -638,7 +736,7 @@ Contributions are welcome! Please follow these guidelines:
 - **Pulumi Version**: ^3.219.0 (minimum)
 - **Node.js**: 18+ required
 - **pnpm**: 10.28.0+
-- **Go**: 1.21+ (for Go SDK)
+- **Go**: 1.25+ (for Go SDK)
 - **TypeScript**: ^5.9.3
 
 ## License
