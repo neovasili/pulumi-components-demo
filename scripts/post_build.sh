@@ -28,6 +28,11 @@ printf " ->${CYAN} Replace module path in sdk/go/pulumicomponentsdemo/go.mod...$
 printf " ->${CYAN} Applying mod tidy to sdk/go/pulumicomponentsdemo...${RESET}\n"
 ( cd sdk/go/pulumicomponentsdemo/ && go mod tidy )
 
+printf " ->${CYAN} Fixing npm package name in sdk/nodejs/package.json...${RESET}\n"
+tmp_pkg=$(mktemp)
+jq '. + {name:"@neovasili/pulumi-components-demo"}' sdk/nodejs/package.json > "${tmp_pkg}"
+mv "${tmp_pkg}" sdk/nodejs/package.json
+
 printf " ->${CYAN} Copy package.json to provider built directory...${RESET}\n"
 cp package.json dist/plugin/
 
