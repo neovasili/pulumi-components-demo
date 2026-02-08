@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.0...v1.0.1) (2026-02-08)
+
+
+### Bug Fixes
+
+* npm package name ([3d412e2](https://github.com/neovasili/pulumi-components-demo/commit/3d412e2264f8743f3d681a09af18a1eab9e0d032))
+
 # 1.0.0 (2026-02-08)
 
 
