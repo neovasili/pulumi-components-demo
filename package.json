@@ -28,7 +28,8 @@
     "gen:sdk": "pnpm gen:sdk:nodejs && pnpm gen:sdk:go",
     "gen:debug": "pnpm build:debug && pnpm gen:schema:debug && pnpm gen:sdk:debug",
     "gen": "pnpm build && pnpm gen:schema && pnpm gen:sdk && pnpm postbuild",
-    "postinstall": "node bin/postinstall.cjs"
+    "postinstall": "node bin/postinstall.cjs",
+    "local:install": "./scripts/local_install.sh"
   },
   "dependencies": {
     "@pulumi/azure-native": "^3.13.0",

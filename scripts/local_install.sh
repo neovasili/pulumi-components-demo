@@ -19,8 +19,9 @@ VERSION=$(jq -e -r '.version' package.json)
 # We keep your explicit platform target
 OS_ARCH="darwin-arm64"
 
-# stage directory in repo (safe to delete/recreate)
-STAGE_DIR=".pulumi-plugin-stage"
+# stage directory (use /tmp by default to avoid workspace side effects)
+STAGE_DIR="${PULUMI_PLUGIN_STAGE_DIR:-/tmp/pulumi-plugin-stage-${PLUGIN_NAME}}"
+KEEP_STAGE="${PULUMI_PLUGIN_KEEP_STAGE:-false}"
 
 # tarball Pulumi will install from
 TARBALL="/tmp/pulumi-resource-${PLUGIN_NAME}-v${VERSION}-${OS_ARCH}.tar.gz"
@@ -28,7 +29,14 @@ TARBALL="/tmp/pulumi-resource-${PLUGIN_NAME}-v${VERSION}-${OS_ARCH}.tar.gz"
 printf "\n${MAGENTA}Installing local plugin via pulumi plugin install:${RESET}\n"
 printf "  name:    %s\n  version: %s\n  tarball: %s\n\n" "${PLUGIN_NAME}" "${VERSION}" "${TARBALL}"
 
-printf " ->${CYAN} Cleaning previous stage...${RESET}\n"
+cleanup() {
+  if [ "${KEEP_STAGE}" != "true" ]; then
+    rm -rf "${STAGE_DIR}"
+  fi
+}
+trap cleanup EXIT
+
+printf " ->${CYAN} Preparing stage directory...${RESET}\n"
 rm -rf "${STAGE_DIR}"
 mkdir -p "${STAGE_DIR}"
 
@@ -58,32 +66,8 @@ cp -R plugin "${STAGE_DIR}/plugin"
 cp -R dist "${STAGE_DIR}/dist"
 cp -R bin "${STAGE_DIR}/bin"
 
-printf " ->${CYAN} Removing nested node_modules from components (workspace deps)...${RESET}\n"
-find "${STAGE_DIR}/components" -type d -name node_modules -prune -exec rm -rf '{}' +
-
-printf " ->${CYAN} Creating plugin executable...${RESET}\n"
-PLUGIN_EXE="${STAGE_DIR}/pulumi-resource-${PLUGIN_NAME}"
-
-cat > "${PLUGIN_EXE}" <<'EON'
-#!/usr/bin/env bash
-set -euo pipefail
-
-PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-if [ ! -d "${PLUGIN_DIR}/node_modules" ]; then
-  (cd "${PLUGIN_DIR}" && pnpm install --prod --frozen-lockfile)
-fi
-
-# Run the provider server entrypoint (compiled JS).
-# IMPORTANT: do not write anything to stdout from here.
-# Forward Pulumi's engine address/flags to the provider.
-exec node "${PLUGIN_DIR}/dist/plugin/provider.js" "$@"
-EON
-
-chmod +x "${PLUGIN_EXE}"
-
-printf " ->${CYAN} Installing plugin dependencies in stage (prod only)...${RESET}\n"
-( cd "${STAGE_DIR}" && pnpm install --prod --frozen-lockfile )
+printf " ->${CYAN} Removing node_modules from stage (tarball must not include them)...${RESET}\n"
+find "${STAGE_DIR}" -type d -name node_modules -prune -exec rm -rf '{}' +
 
 printf " ->${CYAN} Creating plugin tarball...${RESET}\n"
 rm -f "${TARBALL}"
@@ -98,5 +82,7 @@ pulumi plugin ls | grep -E "${PLUGIN_NAME}\s+resource\s+${VERSION}" || {
   exit 1
 }
 
+printf " ->${CYAN} Ensuring nodejs example dependencies are installed...${RESET}\n"
+pnpm install
+
 printf "\n${GREEN}✅ Local plugin installation completed successfully!${RESET}\n"
-printf "Tarball: %s\n" "${TARBALL}"
