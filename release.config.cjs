@@ -8,14 +8,8 @@ module.exports = {
       "@semantic-release/exec",
       {
         prepareCmd: "node scripts/prepare-release.mjs ${nextRelease.version}",
-      },
-    ],
-    [
-      "@semantic-release/npm",
-      {
-        pkgRoot: "sdk/nodejs",
-        npmPublish: true,
-        access: "public",
+        publishCmd:
+          "cd sdk/nodejs && npm publish --provenance --access public --tag ${nextRelease.channel || 'latest'}",
       },
     ],
     [
@@ -35,6 +29,12 @@ module.exports = {
           "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}",
       },
     ],
-    "@semantic-release/github",
+    [
+      "@semantic-release/github",
+      {
+        failComment: false,
+        labels: false,
+      },
+    ],
   ],
 };

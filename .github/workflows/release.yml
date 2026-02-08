@@ -31,9 +31,13 @@ jobs:
         with:
           node-version: 24
           cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Remove .npmrc
         run: rm -f .npmrc
+
+      - name: Upgrade npm (trusted publishing)
+        run: npm install -g npm@11.5.1
 
       - name: Setup Go
         uses: actions/setup-go@v6
