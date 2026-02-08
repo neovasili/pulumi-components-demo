@@ -27,7 +27,6 @@ for os_arch in "${PLATFORMS[@]}"; do
   STAGE_DIR="$(mktemp -d "/tmp/pulumi-plugin-stage-${PLUGIN_NAME}-${os_arch}-XXXXXX")"
 
   cp -f package.json "${STAGE_DIR}/"
-  cp -f pnpm-lock.yaml "${STAGE_DIR}/"
   cp -f PulumiPlugin.yaml "${STAGE_DIR}/"
   cp -f tsconfig.json "${STAGE_DIR}/"
   cp -f index.ts "${STAGE_DIR}/"
@@ -41,7 +40,7 @@ for os_arch in "${PLATFORMS[@]}"; do
 
   # Install deps with pnpm. Use hoisted linker + ignore scripts to avoid postinstall
   # and then dereference symlinks when creating the tarball.
-  (cd "${STAGE_DIR}" && pnpm install --prod --frozen-lockfile --ignore-scripts --node-linker=hoisted)
+  (cd "${STAGE_DIR}" && pnpm install --prod --ignore-scripts --node-linker=hoisted)
 
   TARBALL="${OUT_DIR}/pulumi-resource-${PLUGIN_NAME}-v${VERSION}-${os_arch}.tar.gz"
   tar -C "${STAGE_DIR}" -h \
