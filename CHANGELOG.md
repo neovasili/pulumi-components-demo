@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.5...v1.0.6) (2026-02-08)
+
+
+### Bug Fixes
+
+* try another tarball fix ([d72f461](https://github.com/neovasili/pulumi-components-demo/commit/d72f46165da6c63c4153cc013f55865dd227a7ad))
+
 ## [1.0.5](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.4...v1.0.5) (2026-02-08)
 
 
