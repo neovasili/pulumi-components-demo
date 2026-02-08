@@ -46,7 +46,7 @@ for os_arch in "${PLATFORMS[@]}"; do
 
   # Install deps with pnpm. Use hoisted linker + ignore scripts to avoid postinstall
   # and then dereference symlinks when creating the tarball.
-  (cd "${STAGE_DIR}" && pnpm install --prod --ignore-scripts --node-linker=hoisted)
+  (cd "${STAGE_DIR}" && PNPM_PACKAGE_IMPORT_METHOD=copy pnpm install --prod --ignore-scripts --node-linker=hoisted)
 
   TARBALL="${OUT_DIR}/pulumi-resource-${PLUGIN_NAME}-v${VERSION}-${os_arch}.tar.gz"
   tar -C "${STAGE_DIR}" -h --hard-dereference \
