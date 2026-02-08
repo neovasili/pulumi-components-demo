@@ -32,6 +32,9 @@ jobs:
           node-version: 24
           cache: "pnpm"
 
+      - name: Remove .npmrc
+        run: rm -f .npmrc
+
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
