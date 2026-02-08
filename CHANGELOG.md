@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.7...v1.0.8) (2026-02-08)
+
+
+### Bug Fixes
+
+* remove symlinks ([14c4285](https://github.com/neovasili/pulumi-components-demo/commit/14c4285db2cdabc34f5f5d9133c5eb59fa1e3f54))
+
 ## [1.0.7](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.6...v1.0.7) (2026-02-08)
 
 

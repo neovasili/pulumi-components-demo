@@ -1,6 +1,6 @@
 {
   "resource": true,
   "name": "pulumi-components-demo",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "server": "github://api.github.com/neovasili/pulumi-components-demo"
 }
