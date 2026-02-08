@@ -39,12 +39,15 @@ else
 fi
 
 printf " ->${CYAN} Patching schema for Go SDK...${RESET}\n"
+tmp_schema="$(mktemp)"
 if ! jq '
   .language.go.importBasePath = "github.com/neovasili/pulumi-components-demo/sdk/go/pulumicomponentsdemo"
 | .language.go.modulePath     = "github.com/neovasili/pulumi-components-demo/sdk/go/pulumicomponentsdemo"
-' schema/schema.json | sponge schema/schema.json; then
+' schema/schema.json > "${tmp_schema}"; then
   printf "\n${RED}Error: Failed to patch schema for Go SDK!${RESET}\n"
+  rm -f "${tmp_schema}"
   exit 1
 fi
+mv "${tmp_schema}" schema/schema.json
 
 printf "\n${GREEN}✅ Schema generated successfully!${RESET}\n"
