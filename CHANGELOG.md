@@ -1,3 +1,10 @@
+## [1.0.9](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.8...v1.0.9) (2026-02-08)
+
+
+### Bug Fixes
+
+* release go submodule ([4e87b2a](https://github.com/neovasili/pulumi-components-demo/commit/4e87b2a5e05da77b066b5255f5965c56ab9b8ee9))
+
 ## [1.0.8](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.7...v1.0.8) (2026-02-08)
 
 
