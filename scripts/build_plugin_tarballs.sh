@@ -46,10 +46,18 @@ for os_arch in "${PLATFORMS[@]}"; do
 
   # Install deps with npm to avoid pnpm symlinks/hardlinks in node_modules.
   # Skip scripts to avoid running postinstall during packaging.
-  (cd "${STAGE_DIR}" && npm install --omit=dev --no-package-lock --ignore-scripts)
+  # Disable bin-links so npm doesn't create symlinks in node_modules/.bin.
+  (cd "${STAGE_DIR}" && npm_config_bin_links=false npm install --omit=dev --no-package-lock --ignore-scripts)
+
+  # Drop any .bin directories (they can contain symlinks and aren't needed at runtime).
+  find "${STAGE_DIR}/node_modules" -type d -name .bin -prune -exec rm -rf '{}' +
 
   TARBALL="${OUT_DIR}/pulumi-resource-${PLUGIN_NAME}-v${VERSION}-${os_arch}.tar.gz"
-  tar -C "${STAGE_DIR}" -czf "${TARBALL}" .
+  TAR_FLAGS=(-czf "${TARBALL}" -h)
+  if tar --help 2>&1 | grep -q -- '--hard-dereference'; then
+    TAR_FLAGS+=(--hard-dereference)
+  fi
+  tar -C "${STAGE_DIR}" "${TAR_FLAGS[@]}" .
 
   rm -rf "${STAGE_DIR}"
 done
