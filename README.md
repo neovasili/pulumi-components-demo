@@ -43,7 +43,6 @@ A Pulumi component resource package demonstrating how to build reusable infrastr
     - [Build Errors](#build-errors)
     - [Example Not Finding SDK](#example-not-finding-sdk)
     - [Component Provider Not Found](#component-provider-not-found)
-  - [Local Development Tools](#local-development-tools)
   - [Contributing](#contributing)
     - [Adding Components](#adding-components)
     - [Updating Schema](#updating-schema)
@@ -94,10 +93,6 @@ A reusable component that creates an Azure Storage Account (StorageV2) with a Bl
 
 ```shell
 .
-├── .dev/                        # Local development scripts
-│   ├── local_install.sh         # Install plugin into Pulumi cache (dev)
-│   ├── local_install_sdk.sh     # Local SDK install helper (dev)
-│   └── test.sh                  # Sanity checks for plugin install
 ├── bin/                         # Runtime binaries and install helpers
 │   ├── postinstall.cjs          # Postinstall hook (links plugin into PULUMI_HOME)
 │   └── pulumi-resource-pulumi-components-demo
@@ -666,27 +661,6 @@ If Pulumi can't find the component provider:
 3. Ensure the package is properly built: `pnpm build`
 4. Verify the binary is present: `bin/pulumi-resource-pulumi-components-demo`
 5. Run `pnpm install` to trigger the postinstall hook that links the binary into `PULUMI_HOME`
-
-## Local Development Tools
-
-The `.dev/` directory contains utilities for local development:
-
-- **`local_install.sh`**: Install plugin into Pulumi cache (dev)
-- **`local_install_sdk.sh`**: Install SDKs locally for testing
-- **`test.sh`**: Verify plugin is installed in Pulumi
-
-  ```bash
-  ./.dev/local_install.sh
-  ./.dev/local_install_sdk.sh -l nodejs
-  ./.dev/local_install_sdk.sh -l go
-  ./.dev/test.sh
-  ```
-
-You can also install the plugin via the scripted tarball approach:
-
-```bash
-./scripts/local_install.sh
-```
 
 ## Contributing
 
