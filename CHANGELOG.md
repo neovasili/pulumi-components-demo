@@ -1,3 +1,10 @@
+## [1.0.11](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.10...v1.0.11) (2026-03-04)
+
+
+### Bug Fixes
+
+* remove ambient mode from provider execution, remove unnecessary postinstall ([#1](https://github.com/neovasili/pulumi-components-demo/issues/1)) ([1ac4b73](https://github.com/neovasili/pulumi-components-demo/commit/1ac4b7319aa89de56b602152835578c0ee160853))
+
 ## [1.0.10](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.9...v1.0.10) (2026-02-10)
 
 ## [1.0.9](https://github.com/neovasili/pulumi-components-demo/compare/v1.0.8...v1.0.9) (2026-02-08)
