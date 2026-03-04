@@ -1,13 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Resolve symlinks so this works when invoked from ~/.pulumi/bin.
+SOURCE="${BASH_SOURCE[0]}"
+while [ -L "${SOURCE}" ]; do
+  DIR="$(cd -P "$(dirname "${SOURCE}")" && pwd)"
+  TARGET="$(readlink "${SOURCE}")"
+  if [[ "${TARGET}" != /* ]]; then
+    SOURCE="${DIR}/${TARGET}"
+  else
+    SOURCE="${TARGET}"
+  fi
+done
 
-if [ ! -d "${PLUGIN_DIR}/node_modules" ]; then
-  (cd "${PLUGIN_DIR}" && CI=1 pnpm install --prod --frozen-lockfile)
+SCRIPT_DIR="$(cd -P "$(dirname "${SOURCE}")" && pwd)"
+
+# The executable can live either at plugin root or in bin/.
+if [ -f "${SCRIPT_DIR}/dist/plugin/provider.js" ]; then
+  PLUGIN_ROOT="${SCRIPT_DIR}"
+elif [ -f "${SCRIPT_DIR}/../dist/plugin/provider.js" ]; then
+  PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+else
+  echo "pulumi-components-demo: could not locate dist/plugin/provider.js" >&2
+  exit 1
+fi
+
+if [ ! -d "${PLUGIN_ROOT}/node_modules" ]; then
+  echo "pulumi-components-demo: missing ${PLUGIN_ROOT}/node_modules" >&2
+  echo "Reinstall the plugin to restore runtime dependencies." >&2
+  exit 1
 fi
 
 # Run the provider server entrypoint (compiled JS).
 # IMPORTANT: do not write anything to stdout from here.
 # Forward Pulumi's engine address/flags to the provider.
-exec node "${PLUGIN_DIR}/dist/plugin/provider.js" "$@"
+exec node "${PLUGIN_ROOT}/dist/plugin/provider.js" "$@"
