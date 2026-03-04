@@ -43,6 +43,9 @@ jq '. + {
 }' sdk/nodejs/package.json > "${tmp_pkg}"
 mv "${tmp_pkg}" sdk/nodejs/package.json
 
+printf " ->${CYAN} Copying root README.md into Node SDK package...${RESET}\n"
+cp README.md sdk/nodejs/README.md
+
 printf " ->${CYAN} Building Node SDK...${RESET}\n"
 tsc -p sdk/nodejs/tsconfig.json
 
