@@ -94,7 +94,6 @@ A reusable component that creates an Azure Storage Account (StorageV2) with a Bl
 ```shell
 .
 ├── bin/                         # Runtime binaries and install helpers
-│   ├── postinstall.cjs          # Postinstall hook (links plugin into PULUMI_HOME)
 │   └── pulumi-resource-pulumi-components-demo
 ├── plugin/
 │   └── provider.ts              # Provider host entrypoint
@@ -153,8 +152,6 @@ pnpm install
 # 2. Build and generate everything (includes post-build steps)
 pnpm gen
 ```
-
-During `pnpm install`, the postinstall hook links the plugin binary into `PULUMI_HOME/bin` for local usage.
 
 ### Option 2: Scripted Workflow
 
@@ -506,7 +503,6 @@ To add a new component to this package:
 | `pnpm gen:debug` | Full debug pipeline |
 | `pnpm local:install` | Install local plugin via tarball |
 | `pnpm postbuild` | Lifecycle script: runs post-build steps |
-| `pnpm postinstall` | Lifecycle script: links plugin binary into PULUMI_HOME |
 
 ## Build Scripts Reference
 
@@ -535,7 +531,6 @@ To add a new component to this package:
 - **`schema/schema.json`**: Generated Pulumi schema for SDK generation
 - **`plugin/provider.ts`**: Provider host that registers component resources
 - **`bin/pulumi-resource-pulumi-components-demo`**: Plugin binary entrypoint
-- **`bin/postinstall.cjs`**: Postinstall hook to link the plugin into PULUMI_HOME
 
 ### Generated Artifacts
 
@@ -660,7 +655,7 @@ If Pulumi can't find the component provider:
 2. Check that `dist/` folder contains compiled JavaScript
 3. Ensure the package is properly built: `pnpm build`
 4. Verify the binary is present: `bin/pulumi-resource-pulumi-components-demo`
-5. Run `pnpm install` to trigger the postinstall hook that links the binary into `PULUMI_HOME`
+5. Verify Pulumi plugin installation with `pulumi plugin ls | grep pulumi-components-demo`
 
 ## Contributing
 
